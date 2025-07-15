@@ -1,11 +1,11 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Events;
 
 public class DialogueTalk : DialogueGetData
 {
-    [SerializeField] private DialogueController dialogueController;
+    [SerializeField] private DialogueUI dialogueUI;
     [SerializeField] private AudioSource audioSource;
 
     private DialogueNodeData currentDialogueNodeData;
@@ -14,14 +14,14 @@ public class DialogueTalk : DialogueGetData
     [SerializeField] private float DIALOGUE_READ_DELAY = .5f;
     private void Awake()
     {
-        dialogueController = FindObjectOfType<DialogueController>();
+        dialogueUI = FindObjectOfType<DialogueUI>();
         audioSource = GetComponent<AudioSource>();
     }
 
     public void StartDialogue()
     {
         CheckNodeType(GetNextNode(dialogueContainer.StartNodeDatas[0]));
-        dialogueController.ShowDialogueUI(true);
+        dialogueUI.ShowDialogueUI(true);
     }
     private void CheckNodeType(BaseNodeData baseNodeData)
     {
@@ -64,24 +64,24 @@ public class DialogueTalk : DialogueGetData
                 
         IEnumerator DisplayDialogueLine(List<DialogueLine> list)
         {
-            dialogueController.HideButtons();
+            dialogueUI.HideButtons();
             foreach (DialogueLine dialogueLine in list)
             {
-                dialogueController.SetText(dialogueLine.Name, dialogueLine.Sentence);
-                float audioLength;
+                dialogueUI.SetText(dialogueLine.Name, dialogueLine.Sentence);
+                float sentanceLength;
+
                 if (dialogueLine.AudioClip != null)
                 {
                     audioSource.clip = dialogueLine.AudioClip;
                     audioSource.Play();
-                    audioLength = dialogueLine.AudioClip.length;
+                    sentanceLength = dialogueLine.AudioClip.length;
                 }
                 else
                 {
-                    audioLength = 2f;
-                    Debug.LogWarning("You didn't set an Audio Clip !!!");
+                    sentanceLength = dialogueLine.Sentence.EstimateReadingTime();
                 }
 
-                yield return new WaitForSeconds(audioLength + DIALOGUE_READ_DELAY);
+                yield return new WaitForSeconds(sentanceLength + DIALOGUE_READ_DELAY);
             }
             SetAndShowButtons(nodeData.DialogueNodePorts);
         }
@@ -89,7 +89,11 @@ public class DialogueTalk : DialogueGetData
     }
     private void RunNode(EventNodeData nodeData)
     {
-        nodeData?.DialogueEventSO.RunEvent();
+        if (nodeData.EventKey != string.Empty)
+            EventDispatcher.Instance.Dispatch(nodeData.EventKey);
+        else
+            Debug.LogWarning("Event key is empty");
+
         CheckNodeType(GetNextNode(nodeData));
     }
     private void RunNode(EndNodeData nodeData)
@@ -97,7 +101,7 @@ public class DialogueTalk : DialogueGetData
         switch (nodeData.EndNodeType)
         {
             case EndNodeType.End:
-                dialogueController.ShowDialogueUI(false);
+                dialogueUI.ShowDialogueUI(false);
                 break;
             case EndNodeType.Repeat:
                 CheckNodeType(GetNodeByGuid(currentDialogueNodeData.NodeGuid));
@@ -128,19 +132,19 @@ public class DialogueTalk : DialogueGetData
     private void SetAndShowButtons(List<DialogueNodePort> nodePorts)
     {
         List<string> texts = new List<string>();
-        List<UnityAction> unityActions = new List<UnityAction>();
+        List<Action> actions = new List<Action>();
 
         foreach (DialogueNodePort nodePort in nodePorts)
         {
             texts.Add(nodePort.Text);
-            UnityAction tempAction = null;
+            Action tempAction = null;
             tempAction += () =>
             {
                 CheckNodeType(GetNodeByGuid(nodePort.InputGuid));
             };
-            unityActions.Add(tempAction);
+            actions.Add(tempAction);
         }
 
-        dialogueController.SetButtons(texts, unityActions);
+        dialogueUI.SetButtons(texts, actions);
     }
 }

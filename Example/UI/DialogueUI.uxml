@@ -1,0 +1,12 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" engine="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/Plugins/Dialogue%20Editor/Example/UI/DialogueStyles.uss?fileID=7433441132597879392&amp;guid=51488586bf1d0654e847a5cc06d017b6&amp;type=3#DialogueStyles" />
+    <ui:VisualElement name="dialog-root" styleSheets="DialogueStyles.uss" class="dialog-root" style="bottom: 0; position: absolute; width: 100%; opacity: 1;">
+        <ui:Label name="nickname-label" text="Nickname" class="nickname-label" style="font-size: 32px;" />
+        <ui:Label name="dialog-line-label" text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat." class="dialog-line-label" style="font-size: 23px;" />
+        <ui:VisualElement name="answers-container" class="answers-container">
+            <ui:Button name="answer-button-1" text="Answer 1" />
+            <ui:Button name="answer-button-2" text="Answer 2" />
+            <ui:Button name="answer-button-3" text="Answer 3" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

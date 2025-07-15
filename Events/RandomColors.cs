@@ -11,7 +11,7 @@ public class RandomColors : MonoBehaviour
 
     private void Start()
     {
-        //GameEvents.Instance.TempEvent += DoTempEvent;    
+        //GameEvents.Instance.TempEvent += DoTempEvent;
     }
 
     private void OnDestroy()

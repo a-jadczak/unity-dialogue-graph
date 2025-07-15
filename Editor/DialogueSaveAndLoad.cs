@@ -138,7 +138,7 @@ public class DialogueSaveAndLoad
         {
             NodeGuid = eventNode.NodeGuid,
             Position = eventNode.GetPosition().position,
-            DialogueEventSO = eventNode.DialogueEvent,
+            EventKey = eventNode.EventKey,
         };
     }
     private BranchNodeData SaveNodeData(BranchNode branchNode)
@@ -192,7 +192,7 @@ public class DialogueSaveAndLoad
         {
             EventNode tempNode = graphView.CreateEventNode(node.Position);
             tempNode.NodeGuid = node.NodeGuid;
-            tempNode.DialogueEvent = node.DialogueEventSO;
+            tempNode.EventKey = node.EventKey;
             tempNode.LoadValueInToField();
 
             graphView.AddElement(tempNode);

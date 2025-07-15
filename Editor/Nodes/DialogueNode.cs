@@ -50,6 +50,8 @@ public class DialogueNode : BaseNode
         };
         
         extensionContainer.Add(buttonLine);
+
+        
     }
 
     public void AddDialogueLine(BaseNode baseNode, DialogueLine _dialogueLine = null)
@@ -131,10 +133,6 @@ public class DialogueNode : BaseNode
             dialogueLine.SentenceField.SetValueWithoutNotify(dialogueLine.Sentence);
             dialogueLine.AudioClipField.SetValueWithoutNotify(dialogueLine.AudioClip);
         }
-
-/*        texts_Field.SetValueWithoutNotify(text);
-        audioClip_Field.SetValueWithoutNotify(audioClip);
-        name_Field.SetValueWithoutNotify(name);*/
     }
     public Port AddChoicePort(BaseNode baseNode, DialogueNodePort _dialogueNodePort = null)
     {
@@ -206,10 +204,4 @@ public class DialogueNode : BaseNode
         node.RefreshExpandedState();
     }
 
-    private void CreateLabel(Label label , string x)
-    {
-        label.AddToClassList("label_"+ x);
-        label.AddToClassList("Label");
-        mainContainer.Add(label);
-    }
 }

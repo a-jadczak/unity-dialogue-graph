@@ -1,0 +1,4 @@
+.dialog-line-label
+{
+	white-space: normal;
+}

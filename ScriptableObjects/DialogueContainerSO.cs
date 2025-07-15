@@ -76,7 +76,7 @@ public class StartNodeData : BaseNodeData
 [System.Serializable]
 public class EventNodeData : BaseNodeData
 {
-    public DialogueEventSO DialogueEventSO;
+    public string EventKey;
 }
 [System.Serializable]
 public class BranchNodeData : BaseNodeData 

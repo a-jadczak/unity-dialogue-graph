@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 1924021534211036581}
   - component: {fileID: 1110559171606629543}
   m_Layer: 0
-  m_Name: _DeleteLater
+  m_Name: npc
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

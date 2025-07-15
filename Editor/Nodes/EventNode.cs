@@ -1,14 +1,13 @@
 using System;
 using UnityEditor.Experimental.GraphView;
-using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
 
 public class EventNode : BaseNode
 {
-    private DialogueEventSO dialogueEvent;
-    private ObjectField objectField;
-    public DialogueEventSO DialogueEvent { get => dialogueEvent; set => dialogueEvent = value; }
+    private string _eventKey;
+    private TextField textField;
+    public string EventKey { get => _eventKey; set => _eventKey = value; }
 
     public EventNode()
     {
@@ -20,9 +19,8 @@ public class EventNode : BaseNode
         this.editorWindow = editorWindow;
         this.graphView = graphView;
 
-
         title = "Event";
-        SetPosition(new Rect(pos, defaultNodeSize) );
+        SetPosition(new Rect(pos, defaultNodeSize));
         nodeGuid = Guid.NewGuid().ToString();
 
         this.AddToClassList("eventNode");
@@ -30,26 +28,30 @@ public class EventNode : BaseNode
         AddInputPort("Input", Port.Capacity.Multi);
         AddOutputPort("Output", Port.Capacity.Single);
 
-        objectField = new ObjectField()
+
+        var label = new Label()
         {
-            objectType = typeof(DialogueEventSO),
-            //allowSceneObjects = false, // FIXME: normalnie bylo tak ale uznalem ze moze nie Xd
-            value = dialogueEvent
+            text = " Event key"
         };
 
-        objectField.RegisterValueChangedCallback(value =>
+        textField = new TextField()
         {
-            dialogueEvent = objectField.value as DialogueEventSO;
+            value = _eventKey,
+        };
+
+        textField.RegisterValueChangedCallback(value =>
+        {
+            _eventKey = textField.value;
         });
 
-        objectField.SetValueWithoutNotify(dialogueEvent);
+        textField.SetValueWithoutNotify(_eventKey);
 
-
-        mainContainer.Add(objectField);
+        mainContainer.Add(label);
+        mainContainer.Add(textField);
     }
 
     public override void LoadValueInToField()
     {
-        objectField.SetValueWithoutNotify(dialogueEvent);
+        textField.SetValueWithoutNotify(_eventKey);
     }
 }
