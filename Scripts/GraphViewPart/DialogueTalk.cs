@@ -12,6 +12,8 @@ public class DialogueTalk : DialogueGetData
     private DialogueNodeData lastDialogueNodeData;
 
     [SerializeField] private float DIALOGUE_READ_DELAY = .5f;
+    private bool isDialogueStarted = false;
+
     private void Awake()
     {
         dialogueUI = FindObjectOfType<DialogueUI>();
@@ -20,6 +22,12 @@ public class DialogueTalk : DialogueGetData
 
     public void StartDialogue()
     {
+        if (isDialogueStarted)
+        {
+            return;
+        }
+        isDialogueStarted = true;
+
         CheckNodeType(GetNextNode(dialogueContainer.StartNodeDatas[0]));
         dialogueUI.ShowDialogueUI(true);
     }
@@ -83,7 +91,15 @@ public class DialogueTalk : DialogueGetData
 
                 yield return new WaitForSeconds(sentanceLength + DIALOGUE_READ_DELAY);
             }
-            SetAndShowButtons(nodeData.DialogueNodePorts);
+            // If there is no options
+            if (nodeData.DialogueNodePorts.Count == 0)
+            {
+                CheckNodeType(GetNodeByGuid(nodeData.DefaultOutputPortGuidNode));
+            }
+            else
+            {
+                SetAndShowButtons(nodeData.DialogueNodePorts);
+            }
         }
 
     }
@@ -102,6 +118,7 @@ public class DialogueTalk : DialogueGetData
         {
             case EndNodeType.End:
                 dialogueUI.ShowDialogueUI(false);
+                isDialogueStarted = false;
                 break;
             case EndNodeType.Repeat:
                 CheckNodeType(GetNodeByGuid(currentDialogueNodeData.NodeGuid));

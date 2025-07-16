@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using UnityEngine;
 using System.Linq;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
@@ -94,6 +95,7 @@ public class DialogueSaveAndLoad
 
             DialogueLines = new List<DialogueLine>(dialogueNode.DialogueLines),
             DialogueNodePorts = new List<DialogueNodePort>(dialogueNode.DialogueNodePorts),
+            DefaultOutputPortGuidNode = string.Empty,
         };
 
 
@@ -112,6 +114,17 @@ public class DialogueSaveAndLoad
                 }
             }
         }
+
+        Debug.Log($"DefaultOutputPort: {dialogueNodeData.DefaultOutputPortGuidNode}");
+
+        Edge defaultOutput = edges
+            .Where(x => x.output.node == dialogueNode)
+            .Cast<Edge>()
+            .FirstOrDefault(x => x.output.portName == "Output");
+
+        if (defaultOutput != null)
+            dialogueNodeData.DefaultOutputPortGuidNode = (defaultOutput.input.node as BaseNode).NodeGuid;
+
 
         return dialogueNodeData;
     }
@@ -143,10 +156,11 @@ public class DialogueSaveAndLoad
     }
     private BranchNodeData SaveNodeData(BranchNode branchNode)
     {
-        List<Edge> tmpEdges = edges.Where(x => x.output.node == branchNode).Cast<Edge>().ToList();
+        var tmpEdges = edges.Where(x => x.output.node == branchNode).Cast<Edge>().ToList();
 
-        Edge trueOutput = edges.FirstOrDefault(x => x.output.node == branchNode && x.output.portName == "True");
-        Edge flaseOutput = edges.FirstOrDefault(x => x.output.node == branchNode && x.output.portName == "False");
+        Edge trueOutput = tmpEdges.FirstOrDefault(x => x.output.portName == "True");
+        Edge flaseOutput = tmpEdges.FirstOrDefault(x => x.output.portName == "False");
+
 
         return new BranchNodeData()
         {
@@ -214,6 +228,7 @@ public class DialogueSaveAndLoad
                 tempNode.AddChoicePort(tempNode, port);
             }
 
+            tempNode.AddDefaultOutputPortIfEmpty();
 
             tempNode.LoadValueInToField();
             graphView.AddElement(tempNode);
@@ -243,13 +258,13 @@ public class DialogueSaveAndLoad
                 string targetNodeGuid = connections[j].TargetedNodeGuid;
                 BaseNode targetNode = nodes.First(node => node.NodeGuid == targetNodeGuid);
 
-                if ((nodes[i] is DialogueNode) == false)
+                if ((nodes[i] is DialogueNode) == false || (nodes[i] as DialogueNode).DefaultOutputPort != null)
                 {
                     LinkNodesTogether(nodes[i].outputContainer[j].Q<Port>(), (Port)targetNode.inputContainer[0]);
                 }
             }
         }
-
+        
         List<DialogueNode> dialogueNodes = 
              nodes.FindAll(node => node is DialogueNode)
             .Cast<DialogueNode>()

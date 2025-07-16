@@ -14,29 +14,29 @@ public class BaseNode : Node
     public BaseNode()
     {
         StyleSheet styleSheet = Resources.Load<StyleSheet>(STYLE_NAME);
-        //nie trzeba dodawac rootVisualElement na poczatku (nwm czemu)
         styleSheets.Add(styleSheet);
     }
 
-    public void AddOutputPort(string name, Port.Capacity capacity = Port.Capacity.Single)
+    public Port AddOutputPort(string name, Port.Capacity capacity = Port.Capacity.Single)
     {
         Port outputPort = GetPortInstance(Direction.Output, capacity);
         outputPort.portName = name;
         outputContainer.Add(outputPort);
+
+        return outputPort;
     }
 
     public void AddInputPort(string name, Port.Capacity capacity = Port.Capacity.Multi)
     {
         Port inputPort = GetPortInstance(Direction.Input, capacity);
         inputPort.portName = name;
-        inputContainer.Add(inputPort); // TODO: Sprawdz w dokumentacji
+        inputContainer.Add(inputPort);
     }
 
     protected Port GetPortInstance(Direction nodeDirection, Port.Capacity capacity = Port.Capacity.Single)
     {
         return InstantiatePort(Orientation.Horizontal, nodeDirection, capacity, typeof(float));
     }
-
 
     public virtual void LoadValueInToField()
     {

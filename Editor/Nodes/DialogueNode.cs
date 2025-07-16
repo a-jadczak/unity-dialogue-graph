@@ -10,9 +10,10 @@ public class DialogueNode : BaseNode
 {
     private List<DialogueLine> dialogueLines = new List<DialogueLine>();
     private List<DialogueNodePort> dialogueNodePorts = new List<DialogueNodePort>();
-
+    private Port defaultOutputPort = null;
     public List<DialogueNodePort> DialogueNodePorts { get => dialogueNodePorts; set => dialogueNodePorts = value; }
-    public List<DialogueLine> DialogueLines { get => dialogueLines; set => dialogueLines = value; }
+    public List<DialogueLine> DialogueLines { get => dialogueLines; }
+    public Port DefaultOutputPort { get => defaultOutputPort; set => defaultOutputPort = value; }
 
     public DialogueNode()
     {
@@ -51,7 +52,14 @@ public class DialogueNode : BaseNode
         
         extensionContainer.Add(buttonLine);
 
-        
+        if (defaultOutputPort == null)
+        {
+            defaultOutputPort = AddOutputPort("Output");
+        }
+
+        // Refresh
+        this.RefreshPorts();
+        this.RefreshExpandedState();
     }
 
     public void AddDialogueLine(BaseNode baseNode, DialogueLine _dialogueLine = null)
@@ -138,8 +146,7 @@ public class DialogueNode : BaseNode
     {
         Port port = GetPortInstance(Direction.Output);
 
-        int outputPortCount = baseNode.outputContainer.Query("connector").ToList().Count();
-        string outputPortName = $"Choice {outputPortCount + 1}";
+        string outputPortName = $"Choice ";
 
         DialogueNodePort dialogueNodePort = new DialogueNodePort();
         dialogueNodePort.PortGuid = Guid.NewGuid().ToString();
@@ -176,6 +183,13 @@ public class DialogueNode : BaseNode
 
         baseNode.outputContainer.Add(port);
 
+        // Delete Default Port
+        if (defaultOutputPort != null)
+        {
+            DeletePort(baseNode, defaultOutputPort);
+            defaultOutputPort = null;
+        }
+
         // Refresh
         baseNode.RefreshPorts();
         baseNode.RefreshExpandedState();
@@ -199,9 +213,28 @@ public class DialogueNode : BaseNode
         }
 
         node.outputContainer.Remove(port);
+
+        // Delete Default Port
+        if (outputContainer.childCount == 0)
+        {
+            defaultOutputPort = AddOutputPort("Output");
+        }
+
         // Refresh
         node.RefreshPorts();
         node.RefreshExpandedState();
     }
-
+    /// <summary>
+    /// Pseudo:
+    /// onInit => appear if outputContainer is empty
+    /// onAdd => Delete port
+    /// onDelete => if outputContainer is empty, add port
+    /// </summary>
+    public void AddDefaultOutputPortIfEmpty()
+    {
+        if (outputContainer.childCount == 0)
+        {
+            defaultOutputPort = AddOutputPort("Output");
+        }
+    }
 }

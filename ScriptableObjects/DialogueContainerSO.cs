@@ -60,6 +60,7 @@ public class DialogueNodeData : BaseNodeData
 {
     public List<DialogueNodePort> DialogueNodePorts;
     public List<DialogueLine> DialogueLines;
+    public string DefaultOutputPortGuidNode;
 }
 
 [System.Serializable]
@@ -97,7 +98,7 @@ public class DialogueNodePort
     public string OutputGuid;
     public Port MyPort;
     public TextField TextField;
-    public string Text; // FIXME: zmienic to na liste???
+    public string Text;
 }
 
 [System.Serializable]
