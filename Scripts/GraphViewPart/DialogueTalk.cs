@@ -31,6 +31,11 @@ public class DialogueTalk : DialogueGetData
         CheckNodeType(GetNextNode(dialogueContainer.StartNodeDatas[0]));
         dialogueUI.ShowDialogueUI(true);
     }
+    private void EndDialogue()
+    {
+        dialogueUI.ShowDialogueUI(false);
+        isDialogueStarted = false;
+    }
     private void CheckNodeType(BaseNodeData baseNodeData)
     {
         switch (baseNodeData)
@@ -117,8 +122,7 @@ public class DialogueTalk : DialogueGetData
         switch (nodeData.EndNodeType)
         {
             case EndNodeType.End:
-                dialogueUI.ShowDialogueUI(false);
-                isDialogueStarted = false;
+                EndDialogue();
                 break;
             case EndNodeType.Repeat:
                 CheckNodeType(GetNodeByGuid(currentDialogueNodeData.NodeGuid));
@@ -151,15 +155,14 @@ public class DialogueTalk : DialogueGetData
         List<string> texts = new List<string>();
         List<Action> actions = new List<Action>();
 
-        foreach (DialogueNodePort nodePort in nodePorts)
+        foreach (DialogueNodePort port in nodePorts)
         {
-            texts.Add(nodePort.Text);
-            Action tempAction = null;
-            tempAction += () =>
+            var localPort = port;
+            texts.Add(localPort.Text);
+            actions.Add(() =>
             {
-                CheckNodeType(GetNodeByGuid(nodePort.InputGuid));
-            };
-            actions.Add(tempAction);
+                CheckNodeType(GetNodeByGuid(localPort.InputGuid));
+            });
         }
 
         dialogueUI.SetButtons(texts, actions);

@@ -7,9 +7,9 @@ public class EventDispatcher
     private static EventDispatcher _instance;
     public static EventDispatcher Instance => _instance ??= new EventDispatcher();
 
-    private readonly Dictionary<string, Delegate> _listeners = new();
+    private readonly Dictionary<string, Action> _listeners = new();
 
-    public void Subscribe(string key, Delegate callback) 
+    public void Subscribe(string key, Action callback) 
     {
         if (_listeners.ContainsKey(key))
         {
@@ -30,6 +30,10 @@ public class EventDispatcher
         if (_listeners.TryGetValue(key, out var cb))
         {
             cb.DynamicInvoke();
+        }
+        else
+        {
+            Debug.LogWarning($"Event with key: '{key}' - does not exist.");
         }
     }
 }

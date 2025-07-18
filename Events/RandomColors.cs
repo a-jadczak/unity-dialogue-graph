@@ -1,6 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+
 
 public class RandomColors : MonoBehaviour
 {
@@ -11,17 +13,16 @@ public class RandomColors : MonoBehaviour
 
     private void Start()
     {
-        //GameEvents.Instance.TempEvent += DoTempEvent;
+        Action test = () => { Debug.Log("<color=red>Hello!</color>"); };
+
+        EventDispatcher.Instance.Subscribe("TempEvent", test);
     }
 
     private void OnDestroy()
     {
-        //GameEvents.Instance.TempEvent -= DoTempEvent;
+        EventDispatcher.Instance.Unsubscribe("TempEvent");
     }
 
-    private void DoTempEvent()
-    {
-        Debug.Log("<color=blue>Siema</color>");
-    }
+
 
 }

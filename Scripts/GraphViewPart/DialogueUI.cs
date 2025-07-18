@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UIElements;
 
 public class DialogueUI : MonoBehaviour
@@ -14,7 +16,7 @@ public class DialogueUI : MonoBehaviour
     private Button answerButton2;
     private Button answerButton3;
 
-    private List<Button> answerButtons;
+    private Dictionary<Button, Action> answerButtons;
 
     void Awake()
     {
@@ -26,11 +28,11 @@ public class DialogueUI : MonoBehaviour
         answerButton2 = root.Q<Button>("answer-button-2");
         answerButton3 = root.Q<Button>("answer-button-3");
 
-        answerButtons = new List<Button>()
+        answerButtons = new Dictionary<Button, Action>()
         {
-            answerButton1,
-            answerButton2,
-            answerButton3,
+            { answerButton1, null },
+            { answerButton2, null },
+            { answerButton3, null }
         };
 
         ShowDialogueUI(false);
@@ -46,18 +48,30 @@ public class DialogueUI : MonoBehaviour
 
     public void SetButtons(List<string> texts, List<Action> actions)
     {
-        answerButtons.ForEach(myBtn => myBtn.visible = false);
+        for (int i = 0; i < answerButtons.Count; i++)
+        {
+            var e = answerButtons.ElementAt(i);
+            e.Key.clicked -= e.Value; // Remove previous actions
+        }
+
         float length = texts.Count;
 
         for (int i = 0; i < length; i++)
         {
-            answerButtons[i].text = texts[i];
-            answerButtons[i].visible = true;
-            answerButtons[i].clicked += actions[i];
+            var btn = answerButtons.ElementAt(i).Key;
+            btn.text = texts[i];
+            btn.visible = true;
+
+            btn.clicked += actions[i];
+
+            answerButtons[btn] = actions[i]; // Update the action for the button
         }
     }
     public void HideButtons()
     {
-        answerButtons.ForEach(btn => btn.visible = false);
+        foreach (var item in answerButtons)
+        {
+            item.Key.visible = false;
+        }
     }
 }
