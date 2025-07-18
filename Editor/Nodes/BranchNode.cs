@@ -2,14 +2,13 @@ using System;
 using UnityEngine.UIElements;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
-using UnityEditor.UIElements;
 
 public class BranchNode : BaseNode
 {
-    private ObjectField booleanField;
-    private BooleanSO booleanSO;
+    private TextField booleanField;
+    private string _booleanKey;
 
-    public BooleanSO BooleanSO { get => booleanSO; set => booleanSO = value; }
+    public string BooleanKey { get => _booleanKey; set => _booleanKey = value; }
 
     public BranchNode()
     {
@@ -21,9 +20,6 @@ public class BranchNode : BaseNode
         this.editorWindow = editorWindow;
         this.graphView = graphView;
 
-        // x +=
-        // x -=
-
         title = "Branch";
         SetPosition(new Rect(pos, defaultNodeSize));
         nodeGuid = Guid.NewGuid().ToString();
@@ -34,21 +30,25 @@ public class BranchNode : BaseNode
         AddOutputPort("True", Port.Capacity.Single);
         AddOutputPort("False", Port.Capacity.Single);
 
-        Label labelBoolean = new Label("Boolean value");
-        CreateLabel(labelBoolean, "Boolean value");
-
-        booleanField = new ObjectField()
+        var label = new Label()
         {
-            objectType = typeof(BooleanSO),
-            value = BooleanSO
+            text = " Boolean key"
         };
+
+        booleanField = new TextField()
+        {
+            value = _booleanKey,
+        };
+
 
         booleanField.RegisterValueChangedCallback(value =>
         {
-            BooleanSO = booleanField.value as BooleanSO;
+            _booleanKey = booleanField.value;
         });
-        booleanField.SetValueWithoutNotify(BooleanSO);
 
+        booleanField.SetValueWithoutNotify(_booleanKey);
+
+        mainContainer.Add(label);
         mainContainer.Add(booleanField);
 
     }
@@ -57,15 +57,8 @@ public class BranchNode : BaseNode
     {
 
     }
-    private void CreateLabel(Label label, string x)
-    {
-        label.AddToClassList("label_" + x);
-        label.AddToClassList("Label");
-        mainContainer.Add(label);
-    }
-
     public override void LoadValueInToField()
     {
-        booleanField.SetValueWithoutNotify(BooleanSO);
+        booleanField.SetValueWithoutNotify(_booleanKey);
     }
 }

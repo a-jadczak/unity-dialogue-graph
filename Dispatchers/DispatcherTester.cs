@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-public class RandomColors : MonoBehaviour
+public class DispatcherTester : MonoBehaviour
 {
     private void Awake()
     {
@@ -16,13 +16,12 @@ public class RandomColors : MonoBehaviour
         Action test = () => { Debug.Log("<color=red>Hello!</color>"); };
 
         EventDispatcher.Instance.Subscribe("TempEvent", test);
+        BooleanDispatcher.Instance.Subscribe("TempBoolean", true);
     }
 
     private void OnDestroy()
     {
         EventDispatcher.Instance.Unsubscribe("TempEvent");
+        BooleanDispatcher.Instance.Unsubscribe("TempBoolean");
     }
-
-
-
 }

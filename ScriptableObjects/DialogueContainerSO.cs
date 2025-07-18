@@ -82,7 +82,7 @@ public class EventNodeData : BaseNodeData
 [System.Serializable]
 public class BranchNodeData : BaseNodeData 
 {
-    public BooleanSO BooleanSO;
+    public string BooleanKey;
 
     public string TrueGuidNode;
     public string FalseGuidNode;

@@ -166,7 +166,7 @@ public class DialogueSaveAndLoad
         {
             NodeGuid = branchNode.NodeGuid,
             Position = branchNode.GetPosition().position,
-            BooleanSO = branchNode.BooleanSO,
+            BooleanKey = branchNode.BooleanKey,
             TrueGuidNode = (trueOutput != null ? (trueOutput.input.node as BaseNode).NodeGuid : string.Empty),
             FalseGuidNode = (flaseOutput != null ? (flaseOutput.input.node as BaseNode).NodeGuid : string.Empty),
         };
@@ -239,7 +239,7 @@ public class DialogueSaveAndLoad
         {
             BranchNode tempNode = graphView.CreateBranchNode(node.Position);
             tempNode.NodeGuid = node.NodeGuid;
-            tempNode.BooleanSO = node.BooleanSO;
+            tempNode.BooleanKey = node.BooleanKey;
             tempNode.LoadValueInToField();
 
             graphView.AddElement(tempNode);

@@ -111,7 +111,7 @@ public class DialogueTalk : DialogueGetData
     private void RunNode(EventNodeData nodeData)
     {
         if (nodeData.EventKey != string.Empty)
-            EventDispatcher.Instance.Dispatch(nodeData.EventKey);
+            EventDispatcher.Instance.Dispatch(nodeData.EventKey.Trim());
         else
             Debug.LogWarning("Event key is empty");
 
@@ -138,17 +138,9 @@ public class DialogueTalk : DialogueGetData
     }
     private void RunNode(BranchNodeData nodeData)
     {
-        bool boolean = nodeData.BooleanSO.BooleanValue;
+        bool boolean = BooleanDispatcher.Instance.Dispatch(nodeData.BooleanKey.Trim());
         
-        if (boolean)
-        {
-            CheckNodeType(GetNodeByGuid(nodeData.TrueGuidNode));
-        }
-        else
-        {
-            CheckNodeType(GetNodeByGuid(nodeData.FalseGuidNode));
-        }
-            
+        CheckNodeType(GetNodeByGuid(boolean ? nodeData.TrueGuidNode : nodeData.FalseGuidNode));
     }
     private void SetAndShowButtons(List<DialogueNodePort> nodePorts)
     {
