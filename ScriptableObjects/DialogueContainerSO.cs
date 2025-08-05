@@ -1,8 +1,10 @@
 using System.Collections.Generic;
+#if UNITY_EDITOR
 using UnityEditor.Experimental.GraphView;
 using UnityEditor.UIElements;
-using UnityEngine;
+#endif
 using UnityEngine.UIElements;
+using UnityEngine;
 
 [CreateAssetMenu(menuName = "Dialogue/New Dialogue")]
 [System.Serializable]
@@ -96,7 +98,10 @@ public class DialogueNodePort
     public string PortGuid;
     public string InputGuid;
     public string OutputGuid;
+
+#if UNITY_EDITOR
     public Port MyPort;
+#endif
     public TextField TextField;
     public string Text;
 }
@@ -110,7 +115,9 @@ public class DialogueLine
 
     public TextField NameField;
     public TextField SentenceField;
+#if UNITY_EDITOR
     public ObjectField AudioClipField;
+#endif
 
     public string DialogueLineID;
 

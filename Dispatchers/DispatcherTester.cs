@@ -1,8 +1,5 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-
 
 public class DispatcherTester : MonoBehaviour
 {
@@ -15,13 +12,14 @@ public class DispatcherTester : MonoBehaviour
     {
         Action test = () => { Debug.Log("<color=red>Hello!</color>"); };
 
-        EventDispatcher.Instance.Subscribe("TempEvent", test);
-        BooleanDispatcher.Instance.Subscribe("TempBoolean", true);
+        //EventDispatcher.Instance.Subscribe("TempEvent", test);
+        BooleanDispatcher.Instance.Subscribe("TempBoolean", false);
+        BooleanDispatcher.Instance.Save();
     }
 
     private void OnDestroy()
     {
-        EventDispatcher.Instance.Unsubscribe("TempEvent");
+        //EventDispatcher.Instance.Unsubscribe("TempEvent");
         BooleanDispatcher.Instance.Unsubscribe("TempBoolean");
     }
 }
